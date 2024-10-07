@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
+# write
+
 POSTGRESQL_DATABASE_URL = "postgresql://postgres:password@db/crud"
 
 engine = create_engine(POSTGRESQL_DATABASE_URL, echo=True)
@@ -17,7 +19,7 @@ def get_db():
 
 Base = declarative_base()
 
-# DB - 2
+# DB - 2 - Read
 
 POSTGRESQL_DATABASE_URL = "postgresql://postgres:password@db/crud"
 
