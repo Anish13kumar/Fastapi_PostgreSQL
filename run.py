@@ -26,4 +26,4 @@ async def read_root(request: Request):
 app.include_router(root.router)
 
 if __name__ == "__main__":
-    uvicorn.run("run:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("run:app", host="0.0.0.0", port=8000, reload=True)
