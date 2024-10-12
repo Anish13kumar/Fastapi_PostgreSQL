@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from ..database import get_master_db, get_slave_db
 from sqlalchemy.orm import Session
-from ..schemas import Users, Users_Out
+from ..schemas import Users, Users_Out, UsersResponse
 from ..models import Users as Users_model
 from sqlalchemy.exc import IntegrityError
 from typing import List
@@ -33,10 +33,17 @@ def add_user(data: Users, db: Session = Depends(get_master_db)):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 
-@router.get("/users", response_model=List[Users_Out])
+@router.get("/users", response_model=UsersResponse)
 def get_user(db: Session = Depends(get_slave_db)):
-    # Log the DB URL for the read operation (slave DB)
+    # Get the DB URL for the read operation (slave DB)
     db_url = str(db.bind.url)
     print(f"Reading from database: {db_url}")
-
-    return db.query(Users_model).all()
+    
+    # Query the users from the database
+    users = db.query(Users_model).all()
+    
+    # Return the db_url and the list of users
+    return {
+        "db_url": db_url,
+        "users": users
+    }

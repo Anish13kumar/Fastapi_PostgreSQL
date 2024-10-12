@@ -43,7 +43,10 @@
             const users = await response.json();
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
-            users.forEach(user => {
+            let li = document.createElement('h4');
+            li.textContent = `connected db: ${users.db_url}`; // Display username and password
+            userList.appendChild(li);
+            users.users.forEach(user => {
                 const li = document.createElement('li');
                 li.textContent = `Username: ${user.username}, Password: ${user.password}`; // Display username and password
                 userList.appendChild(li);
