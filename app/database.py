@@ -1,38 +1,31 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# write
+# Master DB - Write
+POSTGRESQL_DATABASE_MASTER_URL = "postgresql://myuser:mypassword@master-db/mydb"
+MASTER_ENGINE = create_engine(POSTGRESQL_DATABASE_MASTER_URL, echo=False)
+MASTER_SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=MASTER_ENGINE)
 
-POSTGRESQL_DATABASE_URL = "postgresql://postgres:password@db/crud"
+# Slave DB - Read
+POSTGRESQL_DATABASE_SLAVE_URL = "postgresql://myuser:mypassword@slave-db/mydb"
+SLAVE_ENGINE = create_engine(POSTGRESQL_DATABASE_SLAVE_URL, echo=False)
+SLAVE_SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=SLAVE_ENGINE)
 
-engine = create_engine(POSTGRESQL_DATABASE_URL, echo=True)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
+# Declare Base
 Base = declarative_base()
 
-# DB - 2 - Read
-
-POSTGRESQL_DATABASE_URL = "postgresql://postgres:password@db/crud"
-
-engine = create_engine(POSTGRESQL_DATABASE_URL, echo=True)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def get_db2():
-    db = SessionLocal()
+# Get the Master DB session for write operations
+def get_master_db():
+    db = MASTER_SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-Base2 = declarative_base()
+# Get the Slave DB session for read operations
+def get_slave_db():
+    db = SLAVE_SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

@@ -1,17 +1,19 @@
 from pydantic import BaseModel
-from typing import Optional
-from uuid import UUID
 
-
+# Request schema
 class Users(BaseModel):
-    username : str
-    password : str
+    username: str
+    password: str
+
     class Config:
         orm_mode = True
 
+
+# Response schema (used when returning data to the client)
 class Users_Out(BaseModel):
-    id:UUID
-    username : str
-    password : str
+    id: int
+    username: str
+    password: str
+
     class Config:
         orm_mode = True

@@ -1,10 +1,9 @@
+from sqlalchemy import Column, Integer, String
 from .database import Base
 
-from sqlalchemy import Column,String,Integer,UUID
-import uuid
-
 class Users(Base):
-    __tablename__ = "super_admins"
-    id = Column(UUID(36), primary_key=True, default=uuid.uuid4()) 
-    username = Column(String, nullable=False, unique=True)
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
