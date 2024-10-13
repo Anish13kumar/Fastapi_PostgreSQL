@@ -37,6 +37,9 @@ def add_user(data: Users, db: Session = Depends(get_master_db)):
 @router.get("/users", response_model=UsersResponse)
 def get_user(db: Session = Depends(get_slave_db)):
     # Get the DB URL for the read operation (slave DB)
+    data = db.execute(text("SELECT inet_server_addr();"))
+    for datas in data:
+        [ip] = datas
     db_url = str(db.bind.url)
     print(f"Reading from database: {db_url}")
     
@@ -45,7 +48,7 @@ def get_user(db: Session = Depends(get_slave_db)):
     
     # Return the db_url and the list of users
     return {
-        "db_url": db_url,
+        "db_url": ip,
         "users": users
     }
 
