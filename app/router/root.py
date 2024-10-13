@@ -6,7 +6,8 @@ from ..schemas import Users, Users_Out, UsersResponse
 from ..models import Users as Users_model
 from sqlalchemy.exc import IntegrityError
 from typing import List
-import logging
+import logging,json
+from sqlalchemy import text
 
 router = APIRouter()
 
@@ -38,6 +39,25 @@ def get_user(db: Session = Depends(get_slave_db)):
     # Get the DB URL for the read operation (slave DB)
     db_url = str(db.bind.url)
     print(f"Reading from database: {db_url}")
+    
+    # Query the users from the database
+    users = db.query(Users_model).all()
+    
+    # Return the db_url and the list of users
+    return {
+        "db_url": db_url,
+        "users": users
+    }
+
+@router.get("/get_users", response_model=UsersResponse)
+def get_user(db: Session = Depends(get_slave_db)):
+    # Get the DB URL for the read operation (slave DB)
+    data = db.execute(text("SELECT inet_server_addr();"))
+    for datas in data:
+        print(datas)
+    
+    db_url = str(db.bind.url)
+    # print(f"Reading from database: {json.loads(data)}")
     
     # Query the users from the database
     users = db.query(Users_model).all()
